@@ -1,0 +1,13 @@
+{
+  "name": "mbev-plugins",
+  "owner": { "name": "Mark Bevivino" },
+  "metadata": { "description": "Claude Code plugins by mbev" },
+  "plugins": [
+    {
+      "name": "taskbar-flash",
+      "source": "./",
+      "description": "Windows: flashes the Claude window and its taskbar button when a session finishes or needs you, until you switch to it.",
+      "version": "0.1.0"
+    }
+  ]
+}
