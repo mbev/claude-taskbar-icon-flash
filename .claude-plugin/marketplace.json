@@ -7,7 +7,7 @@
       "name": "taskbar-flash",
       "source": "./",
       "description": "Windows: flashes the Claude window and its taskbar button when a session finishes or needs you, until you switch to it.",
-      "version": "0.2.0"
+      "version": "0.2.1"
     }
   ]
 }
