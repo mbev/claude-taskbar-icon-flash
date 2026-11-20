@@ -4,10 +4,10 @@
   "metadata": { "description": "Claude Code plugins by mbev" },
   "plugins": [
     {
-      "name": "taskbar-flash",
+      "name": "taskbar-icon-flash",
       "source": "./",
       "description": "Windows: flashes the Claude window and its taskbar button when a session finishes or needs you, until you switch to it.",
-      "version": "0.2.1"
+      "version": "0.3.0"
     }
   ]
 }

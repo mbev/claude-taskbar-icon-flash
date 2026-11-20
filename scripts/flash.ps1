@@ -1,4 +1,4 @@
-# taskbar-flash: get attention for the window hosting this Claude Code session.
+# taskbar-icon-flash: get attention for the window hosting this Claude Code session.
 # Usage: flash.ps1 start|stop|test [-RateMs 500]
 #   start  launch a background watcher that pulses the taskbar button red (works even when the
 #          window has focus) and flashes it when it doesn't, until you engage with the window
@@ -36,7 +36,7 @@ interface ITaskbarList3
 [ComImport, Guid("56FDF344-FD6D-11d0-958A-006097C9A090"), ClassInterface(ClassInterfaceType.None)]
 class TaskbarListCom { }
 
-public static class TaskbarFlash
+public static class TaskbarIconFlash
 {
     [StructLayout(LayoutKind.Sequential)]
     struct FLASHWINFO { public uint cbSize; public IntPtr hwnd; public uint dwFlags; public uint uCount; public uint dwTimeout; }
@@ -144,7 +144,7 @@ public static class TaskbarFlash
         FlashWindowEx(ref fi);
     }
 
-    static string StopEventName(long hwnd) { return "Local\\taskbar-flash-stop-" + hwnd; }
+    static string StopEventName(long hwnd) { return "Local\\taskbar-icon-flash-stop-" + hwnd; }
 
     public static void SignalStop(long hwnd)
     {
@@ -164,7 +164,7 @@ public static class TaskbarFlash
     {
         IntPtr hwnd = new IntPtr(hwndValue);
         bool created;
-        using (var mutex = new Mutex(true, "Local\\taskbar-flash-" + hwndValue, out created))
+        using (var mutex = new Mutex(true, "Local\\taskbar-icon-flash-" + hwndValue, out created))
         {
             if (!created) return;                 // a watcher is already running for this window
             using (var stop = new EventWaitHandle(false, EventResetMode.ManualReset, StopEventName(hwndValue)))
@@ -226,17 +226,17 @@ public static class TaskbarFlash
     # Compile once per source version into a windowless exe (no console flash when launched) and cache it.
     $sha = [System.Security.Cryptography.SHA1]::Create()
     $hash = -join ($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($src))[0..5] | ForEach-Object { $_.ToString('x2') })
-    $cacheDir = Join-Path $env:LOCALAPPDATA 'taskbar-flash'
-    $exe = Join-Path $cacheDir "TaskbarFlash-$hash.exe"
+    $cacheDir = Join-Path $env:LOCALAPPDATA 'taskbar-icon-flash'
+    $exe = Join-Path $cacheDir "TaskbarIconFlash-$hash.exe"
     if (-not (Test-Path $exe)) {
         New-Item -ItemType Directory -Force -Path $cacheDir | Out-Null
         Add-Type -TypeDefinition $src -OutputAssembly $exe -OutputType WindowsApplication
     }
-    if (-not ([System.Management.Automation.PSTypeName]'TaskbarFlash').Type) {
+    if (-not ([System.Management.Automation.PSTypeName]'TaskbarIconFlash').Type) {
         [void][Reflection.Assembly]::LoadFrom($exe)
     }
 
-    $host_ = [TaskbarFlash]::FindHostWindow()
+    $host_ = [TaskbarIconFlash]::FindHostWindow()
     if (-not $host_) {
         if ($Action -eq 'test') { 'No host window found (unattended run or no windowed ancestor).' }
         exit 0
@@ -246,7 +246,7 @@ public static class TaskbarFlash
     switch ($Action) {
         'test'  { "Would flash: $exeName  hwnd=$hwnd  title='$title'" }
         'start' { Start-Process -FilePath $exe -ArgumentList 'watch', $hwnd, $RateMs }
-        'stop'  { [TaskbarFlash]::SignalStop([long]$hwnd) }
+        'stop'  { [TaskbarIconFlash]::SignalStop([long]$hwnd) }
     }
 }
 catch {

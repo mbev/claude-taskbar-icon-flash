@@ -1,6 +1,6 @@
 {
-  "name": "taskbar-flash",
-  "version": "0.2.1",
+  "name": "taskbar-icon-flash",
+  "version": "0.3.0",
   "description": "Windows: pulses the Claude window's taskbar button red when a session finishes or needs you, until you come back to it.",
   "license": "MIT",
   "author": { "name": "Mark Bevivino" }
